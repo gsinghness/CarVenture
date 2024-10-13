@@ -1,5 +1,6 @@
 package com.carventure.webapp.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,6 +8,23 @@ import java.time.LocalDateTime;
 
 @Document(collection = "users")
 public class User {
+
+    public enum CurrentState {
+        //small case stages mobile_verified, email_verified, preferred_name_filled
+        MOBILE_VERIFIED("mobile_verified"),
+        EMAIL_VERIFIED("email_verified"),
+        PREFERRED_NAME_FILLED("preferred_name_filled");
+
+        private final String value;
+        CurrentState(String value) {
+            this.value = value;
+        }
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+    }
 
     @Id
     private String id;
@@ -17,6 +35,8 @@ public class User {
     private int otpRetryCount;
     private LocalDateTime otpExpiryDate;
     private LocalDateTime otpCoolOffEndTime;
+    private String currentState;
+    private String preferredName;
 
     public User( String phone, String otp, int otpRetryCount, LocalDateTime otpExpiryDate) {
         this.phone = phone;
@@ -87,5 +107,21 @@ public class User {
 
     public void setOtpCoolOffEndTime(LocalDateTime otpCoolOffEndTime) {
         this.otpCoolOffEndTime = otpCoolOffEndTime;
+    }
+
+    public String getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(String currentState) {
+        this.currentState = currentState;
+    }
+
+    public String getPreferredName() {
+        return preferredName;
+    }
+
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
     }
 }
